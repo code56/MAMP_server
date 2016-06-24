@@ -179,6 +179,17 @@ jQuery.extend(Drupal.settings,
 					<form action="http://www.wheat-expression.com/">
 						<input type="submit" value="Go to expVIP">
 					</form>
+
+					<form action="insert.php" method="post">   <!--or use get method where the data is visible into the url-->
+		
+						Name : <input type="text" name="username">
+								<br/>
+						Email : <input type="text" name="email">
+								<br/>
+								<input type="submit" value="Insert">
+
+					</form>	
+					
 					<button class="right" type="button" onclick="alert('Hello world!')">Upload your data!</button>
 					<div id="bar_expression_viewer"> </div>
 				</div>
