@@ -1,6 +1,6 @@
 <?php
 
-	$con = mysql_connect('127.0.0.1', 'root', 'evanthia1011');
+	$con = mysql_connect('localhost', 'root', 'evanthia1011');
 
 	if(!con)
 	{
@@ -15,7 +15,7 @@
 	$Name = $_POST['username'];
 	$Email = $_POST['email'];
 	
-	$sql = "INSERT INTO mytable2 (USERNAME, email) VALUES ('$USERNAME','$Email')"
+	$sql = "INSERT INTO page_data (page_name, page_title) VALUES ('$username','$Email')"
 
 	if(!mysqli_query($con, $sql))
 
@@ -29,7 +29,7 @@
 		echo 'Inserted';
 	}
 
-	header("refresh:2; url=data_form.html");
+	header("refresh:2; url=index.html");
 
-	
+
 ?>
