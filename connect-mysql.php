@@ -3,7 +3,7 @@
 DEFINE ('DB_USER', 'root');
 DEFINE ('DB_PSWD', 'evanthia1011');
 DEFINE ('DB_HOST', 'localhost');
-DEFINE ('DB_NAME', 'InteractiveFigure');
+DEFINE ('DB_NAME', '');
 
 
 
@@ -24,3 +24,5 @@ echo 'you have connected successfully';
 
 	
 ?>
+
+<!-- comment here about what is going on -->
