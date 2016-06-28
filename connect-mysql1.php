@@ -19,7 +19,42 @@ if(!$con)
 		die ('Not Connected to database Server');
 	}
 
-echo 'you have connected successfully';
+echo 'you have connected successfully' . "\xA\xA";
+
+printf(PHP_EOL);
+
+// Change database to "test"
+
+$db_sel = mysqli_select_db($con,'peopledatabase');
+
+if (!$db_sel)
+  {
+  echo "Failed to connect to db: ";
+  }
+
+
+if ($db_sel)
+  {
+  echo "connected to db:";
+  }
+
+
+
+// // make foo the current db
+// $db_selected = mysqli_select_db('foo', $con);
+
+// if (!$db_selected) {
+    
+//     die ('Can\'t use foo : ' . mysql_error());
+// }
+
+
+// if ($db_selected) {
+    
+//     echo ('use foo : ' . mysql_error());
+// }
+
+
 
 /*
 $con_db = mysqli_select_db(DB_NAME);
