@@ -1,19 +1,11 @@
 <?php
 
-<<<<<<< HEAD
 DEFINE ('DB_USER', 'root'); // cannot work with peopledatabase
 DEFINE ('DB_PSWD', 'root');  //cannot work with evanthia1011
 DEFINE ('DB_HOST', 'localhost');
 DEFINE ('DB_NAME', 'peopledatabase'); //also works with test_database2
 
 $db_name = 'peopledatabase';  
-=======
-DEFINE ('DB_USER', 'root');
-DEFINE ('DB_PSWD', 'evanthia1011');
-DEFINE ('DB_HOST', 'localhost');
-DEFINE ('DB_NAME', '');
-
->>>>>>> e7809acca26f386263569e17f4d921eceda34b34
 
 
 
@@ -29,7 +21,6 @@ if(!$con)
 
 echo 'you have connected successfully';
 
-<<<<<<< HEAD
 /*
 $con_db = mysqli_select_db(DB_NAME);
 
@@ -44,8 +35,6 @@ echo 'you found database';*/
 // @mysqli _select_db('$db_name') or die ('No database');
 
 
-=======
->>>>>>> e7809acca26f386263569e17f4d921eceda34b34
 
 
 	
