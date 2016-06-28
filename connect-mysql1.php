@@ -29,14 +29,43 @@ $db_sel = mysqli_select_db($con,'peopledatabase');
 
 if (!$db_sel)
   {
-  echo "Failed to connect to db: ";
+  echo "Failed to connect to db";
   }
 
 
 if ($db_sel)
   {
-  echo "connected to db:";
+  echo "connected to db";
   }
+
+
+// insert data into the table 
+
+$sql = "INSERT INTO tablepeople (username, email) VALUES ('jhon', 'anymail@h.com')"; 
+
+
+if ($con->query($sql) === TRUE) {
+    echo "New record created successfully";
+} else {
+    echo "Error: " . $sql . "<br>" . $con->error;
+}
+
+
+
+
+// $query = mysqli_query($con, $sql);
+
+// if ($query)
+// 	{
+// 	echo 'data inserted successfully';
+// 	}
+
+// if (!$query)
+// 	{
+// 	echo '   data was not inserted successfully';
+// 	}
+
+
 
 
 
