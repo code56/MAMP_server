@@ -1,7 +1,7 @@
 <?php
 
-DEFINE ('DB_USER', 'root'); // cannot work with peopledatabase
-DEFINE ('DB_PSWD', 'root');  //cannot work with evanthia1011
+DEFINE ('DB_USER', 'peopledatabase'); // works with peopledatabase because I have granted super privileges to this user
+DEFINE ('DB_PSWD', 'evanthia1011');  //works with evanthia1011 because I have granted super privileges from the phpMyAdmin
 DEFINE ('DB_HOST', 'localhost');
 DEFINE ('DB_NAME', 'peopledatabase'); //also works with test_database2
 
