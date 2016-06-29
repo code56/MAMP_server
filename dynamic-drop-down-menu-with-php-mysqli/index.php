@@ -1,5 +1,5 @@
 <?php
-$dbcon = new MySQLi("localhost","root","","dbmenu");
+$dbcon = new MySQLi("localhost","root","root","peopledatabase");
 ?>
 <!DOCTYPE html>
 <html lang="en">
