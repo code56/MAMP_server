@@ -73,25 +73,36 @@ if ($connection->query($sql) === TRUE) {
 */
 
 // Get values from form
-$name=$_POST['firstname'];
-$lastname=$_POST['lastname'];
+$name=$_POST['fname'];
+$lastname=$_POST['lname'];
+
+echo "name is: ".$_POST['fname']." , lastname is ".$_POST['lname'];  
 
 
 // Insert data into mysql
-$sql="INSERT INTO nametable(firstname, lastname)VALUES('$name', '$lastname')";
-$result=mysqli_query($sql);
+$sql="INSERT INTO `nametable` (`firstname`, `lastname`)VALUES('$name', '$lastname')";
+
+if ($connection->query($sql) === TRUE) {
+    echo "New record created successfully";
+} else {
+    echo "Error: " . $sql . "<br>" . $connection->error;
+}
+
+
+//$result=$connection->mysqli_query($sql);
 
 // if successfully insert data into database, displays message "Successful".
-if($result){
-echo "Successful";
-echo "<BR>";
-echo "<a href='insert.php'>Back to main page</a>";
-}
+// if($result){
+// echo "Successful";
+// echo "<BR>";
+// echo "<a href='insert.php'>Back to main page</a>";
+// }
 
-else {
-echo "ERROR";
-}
-?> 
+// else {
+// echo "got an error inserting into mysql";
+// echo "error is ".$result->error
+// }
+
 
 
 
@@ -144,7 +155,5 @@ echo "ERROR";
 
 
 
-<?php
-mysqli_close(); // Closing Connection with Server
 ?>
 
