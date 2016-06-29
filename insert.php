@@ -18,9 +18,9 @@
 <!-- Method can be set as POST for hiding values in URL-->
 <h2>Form</h2>
 <label>First name:</label>
-<input class="input" name="firstname" type="text" value="">
+<input class="input" name="fname" type="text" value="">
 <label>Lastname:</label>
-<input class="input" name="lastname" type="text" value="">
+<input class="input" name="lname" type="text" value="">
 <!-- <label>Contact:</label>
 <input class="input" name="contact" type="text" value="">
 <label>Address:</label>
@@ -72,7 +72,7 @@ if ($connection->query($sql) === TRUE) {
 
 */
 
-$sql="INSERT INTO nametable (fname, lname)
+$sql="INSERT INTO 'nametable' ('fname', 'lname')
 
 VALUES
 
