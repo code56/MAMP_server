@@ -72,23 +72,49 @@ if ($connection->query($sql) === TRUE) {
 
 */
 
-$sql="INSERT INTO 'nametable' ('fname', 'lname')
+// Get values from form
+$name=$_POST['firstname'];
+$lastname=$_POST['lastname'];
 
-VALUES
 
-('$_POST[fname]','$_POST[lname]')";
+// Insert data into mysql
+$sql="INSERT INTO nametable(firstname, lastname)VALUES('$name', '$lastname')";
+$result=mysqli_query($sql);
+
+// if successfully insert data into database, displays message "Successful".
+if($result){
+echo "Successful";
+echo "<BR>";
+echo "<a href='insert.php'>Back to main page</a>";
+}
+
+else {
+echo "ERROR";
+}
+?> 
+
+
+
+
+
+
+// $sql="INSERT INTO nametable (fname, lname)
+
+// VALUES
+
+// ('$_POST[fname]','$_POST[lname]')";
 
  
 
-if (!mysqli_query($sql,$connection))
+// if (!mysqli_query($sql,$connection))
 
-  {
+//   {
 
-  die('Error: ' . mysqli_error());
+//   die('Error: ' . mysqli_error());
 
-  }
+//   }
 
-echo "1 record added";
+// echo "1 record added";
 
  
 
@@ -115,6 +141,10 @@ echo "1 record added";
 // }
 // }
 
-mysqli_close($connection); // Closing Connection with Server
+
+
+
+<?php
+mysqli_close(); // Closing Connection with Server
 ?>
 
