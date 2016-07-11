@@ -1,0 +1,7 @@
+name = My Custom Theme
+description = Theme for eLife article.
+core = 7.x
+engine = phptemplate
+
+stylesheets[all][] = css/common.css
+
