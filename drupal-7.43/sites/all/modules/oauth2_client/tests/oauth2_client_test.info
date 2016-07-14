@@ -1,0 +1,14 @@
+name = OAuth2 Client Test
+description = Testing OAuth2 client functionality.
+package = "OAuth2"
+core = 7.x
+
+dependencies[] = oauth2_client
+dependencies[] = oauth2_server
+
+; Information added by Drupal.org packaging script on 2015-10-16
+version = "7.x-1.4"
+core = "7.x"
+project = "oauth2_client"
+datestamp = "1444990456"
+

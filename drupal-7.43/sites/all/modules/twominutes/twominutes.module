@@ -1,0 +1,21 @@
+<?php
+
+/**
+* Implements hook_menu().
+* $items is an array. 
+* if you do: localhost:8888/twominutes-page
+*/
+
+function twominutes_menu() {
+	$items['twominutes-page'] = array(
+	'page callback' => 'twominutes_page',
+	'access arguments' => array('access content'),
+	'type' => MENU_CALLBACK,
+	);
+	return $items;
+}
+
+function twominutes_page() {
+	return "Hello, world!";
+}
+

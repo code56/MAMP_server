@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Documentation for Drupal's OAuth2 Authentication Module</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <h1>Documentation for Drupal's OAuth2 Authentication Module</h1>
+
+    <h2>Purpose</h2>
+    <p>
+      <a href="https://www.drupal.org/project/oauth2_authentication">OAuth2 Authentication</a> allows users to log into your Drupal site authenticating against a remote <a href="https://en.wikipedia.org/wiki/Identity_provider">identity provider (IDP)</a> via <a href="https://en.wikipedia.org/wiki/OAuth2#OAuth_2.0">OAuth2</a>.
+    </p>
+    <p>
+      That is, if a user's credentials can be used to retrieve a valid <a href="https://en.wikipedia.org/wiki/Access_token">access token</a>, he/she will be logged into the site with those credentials and the token will be added to his/her session.  If the user doesn't exist yet, it will be created.
+    </p>
+
+    <h2>Disclaimer</h2>
+    <p>
+      In doing this, we're making the assumption that resource requesters are actually resource owners.  Generally, one shouldn't make that assumption as <strong>OAuth2 is an authorization mechanism, not an authentication mechanism</strong>.
+    </p>
+
+    <p>
+      If you found this module looking for a standard way to have users log in via OAuth2, then you should probably go with <a href="https://www.drupal.org/project/openid_connect"> OpenID Connect</a> instead.  It provides a proper identity layer on top of OAuth2.  Think of it like the evolution of <a href="https://en.wikipedia.org/wiki/Security_Assertion_Markup_Language">SAML</a>.  This module is meant for those that don't have access to an OpenID Connect server, do have access to an IDP that speaks OAuth2, and can trust the environment in which all of it operates.
+    </p>
+
+    <p>
+      If you haven't considered the security implications of using this module, and you don't control the environment in which it's running, then you shouldn't be using it.  For example, you probably don't want to do this sort of thing on a mobile environment as it can't be trusted to the same extent as a Drupal site behind a corporate firewall.
+    </p>
+
+    <p>
+      If you made it this far, and are still considering using the module, then make sure you've read and understood the following articles.
+    </p>
+
+    <ul>
+      <li>
+        <a href="http://blog.api-security.org/2013/02/why-oauth-it-self-is-not-authentication.html">Why OAuth it self is not an authentication framework?</a>
+      </li>
+      <li>
+        <a href="http://www.thread-safe.com/2012/01/problem-with-oauth-for-authentication.html">The problem with OAuth for Authentication</a>
+      </li>
+    </ul>
+
+    <p>
+      It also wouldn't hurt to study the official <a href="http://tools.ietf.org/html/rfc6819">OAuth 2.0 Threat Model and Security Considerations</a>.
+    </p>
+
+    <h2>Initial Set-Up</h2>
+    <ol>
+      <li>
+        Install and enable the <a href="https://www.drupal.org/project/oauth2_client">OAuth2 Client</a> and <a href="https://www.drupal.org/project/oauth2_authentication"> OAuth2 Authentication</a> modules <a href="https://www.drupal.org/documentation/install/modules-themes/modules-7">as you would any other</a>.
+      </li>
+      <li>
+        If you wish to override any of the methods in the <em>OAuth2AuthenticationClient</em> class to change the module's behaviour, create another class that extends it and implement the desired methods.  This is best done in a custom module for your site, something like <em>Sitename</em> Authentication (<em>sitename</em>_authentication) where <em>S/sitename</em> is the name of your site.
+      </li>
+      <li>
+        Surf to the configuration page over at Home » Administration » Configuration » Web services » OAuth2 Authentication to configure your token endpoint.  This section is mandatory while the others are optional.  They contain sane defaults, but look over all of it to make sure it's what you need for your set-up.
+      </li>
+      <li>
+        If you subclassed <em>OAuth2AuthenticationClient</em>, replace the default class name in Miscellaneous Settings » Client Class with the name of your new class.
+      </li>
+      <li>Hit the <em>Save configuration</em> button to save your settings.</li>
+      <li>Enjoy!</li>
+    </ol>
+
+    <h2>Notes</h2>
+
+    <ul>
+      <li>
+        When an existing local user logs in, the module will attempt to get an access token for him/her.  On success, the token will be added to the user's session.  On failure, the user will still be logged in, but will not get a token.  Whenever a request to get a token is made, the results are reported in the log.
+      </li>
+      <li>
+        Once you've got this set up, you'll have to ensure that <a href="https://www.drupal.org/node/2292623">the Web-services client module you're using</a> supports the OAuth2 protocol (i.e. token access to resources).  If you're already using one that doesn't, you'll have to add that support.  Otherwise, go with one that supports this already.
+      </li>
+    </ul>
+
+    <h2>Issues</h2>
+
+    <h3>Token Expiration</h3>
+
+    <p>
+      If the total expiration time for your tokens, including successive tokens returned by your token server through refresh tokens (RTs), is less than the maximum time a user can be logged in (see <a href="https://www.drupal.org/project/session_expire">Session Expire</a> for details), users will still be logged in when their final tokens expire.
+    </p>
+
+    <p>
+      As this module doesn't (yet) deal with that situation, you'll need to come up with a solution that meets your requirements.  Some background information on this can be found over at <a href="https://rnd.feide.no/2012/04/19/best-practice-for-dealing-with-oauth-2-0-token-expiration-at-the-consumer/">Best-Practice for dealing with OAuth 2.0 Token expiration at the Consumer</a>.
+    </p>
+
+    <h4>Options</h4>
+
+    <ul>
+      <li>Automatically log out each user after being logged in for the token expiry time.</li>
+      <li>Extend the token expiration time to the maximum amount of time a user can be logged in.</li>
+      <li>Add support for refresh tokens (RTs) that can keep working until a user's login session expires.</li>
+      <li>Have the token server issue tokens that don't expire.</li>
+      <li>Some combination of the above.</li>
+    </ul>
+
+    <h4>Real-World Solutions</h4>
+
+    <ul>
+      <li><a href="https://developers.facebook.com/docs/facebook-login/access-tokens">Facebook: Access Tokens</a></li>
+      <li><a href="https://developer.linkedin.com/documents/handling-errors-invalid-tokens">LinkedIn: Handling Errors &amp; Invalid Tokens</a></li>
+      <li><a href="https://developers.blog.box.com/2013/11/13/oauth2-update-longer-lived-refresh-tokens/">Box: OAuth2 update - Longer lived refresh tokens</a></li>
+      <li><a href="https://www.salesforce.com/us/developer/docs/api_rest/Content/intro_understanding_refresh_token_oauth.htm">Salesforce: Understanding the OAuth Refresh Token Process</a></li>
+    </ul>
+
+    <h4>Helpful Drupal Modules</h4>
+
+    <ul>
+      <li><a href="https://www.drupal.org/project/session_expire">Session expire</a> (also explains the default login session length)</li>
+      <li><a href="https://www.drupal.org/project/autologout">Automated Logout</a></li>
+      <li><a href="https://www.drupal.org/project/ejectorseat">Ejector Seat</a></li>
+    </ul>
+  </body>
+</html>

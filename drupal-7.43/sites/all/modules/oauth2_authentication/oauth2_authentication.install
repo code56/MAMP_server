@@ -1,0 +1,21 @@
+<?php
+
+/**
+ * @file
+ * Installation file for the OAuth2 Authentication module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function oauth2_authentication_uninstall() {
+
+  // Delete the configuration.
+  variable_del('oauth2_authentication_token_endpoint');
+  variable_del('oauth2_authentication_client_id');
+  variable_del('oauth2_authentication_client_secret');
+  variable_del('oauth2_authentication_scope');
+  variable_del('oauth2_authentication_class');
+  variable_del('oauth2_authentication_user_edit_email');
+  variable_del('oauth2_authentication_user_edit_password');
+}

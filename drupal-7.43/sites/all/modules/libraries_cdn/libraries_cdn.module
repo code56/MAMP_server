@@ -1,0 +1,236 @@
+<?php
+
+/**
+ * @file
+ * Main module file.
+ */
+
+/**
+ * Implements hook_libraries_info_alter().
+ *
+ * To get into this hook, add a new key to the library definition in
+ * hook_libraries_info().
+ *
+ * Here's an example:
+ *
+ * 'cdn' => array(
+ *   'aliases' => array('ol3', 'openlayers3'),
+ *   'limit' => 3,
+ *   'options' => array(
+ *     'weight' => 0,
+ *     'group' => $js_css_group,
+ *   ),
+ *   'download' => array(
+ *     'versions' => array('3.8.1'),
+ *     'plugins' => array(
+ *       'cdnjs' => array('3.8.2')
+ *       '*' => array('latest')
+ *     ),
+ *   ),
+ *   'request' => array(
+ *     'timeout' => 5,
+ *   )
+ * )
+ *
+ * - plugins: array, the list of cdn plugins to search the library from.
+ *            It Will use all of them if not set.
+ * - aliases: array, if the library has different names.
+ * - limit: integer, set this to limit the number of results. If set to 3, it
+ *          will return the 3 latest versions available.
+ * - options: array, this array will be applied to each file definition,
+ *            see drupal_add_TYPE() (js or css) to see which are the keys.
+ * - download: array, options to download a local copy of the library
+ *   - versions: array, version to download on any CDN when available.
+ *   - plugins: array, keys are CDN plugin ids and the special keyword '*' can
+ *              be use to specify all CDN plugins. Values are versions to
+ *              download when available. The special keyword: 'latest' can be
+ *              used to download the latest version available.
+ * - request: array, this array will be the configuration that will be passed
+ *            to the request function. See drupal_http_request() for a list of
+ *            key values.
+ */
+function libraries_cdn_libraries_info_alter(&$info) {
+  foreach ($info as $library_name => &$library) {
+    $variants = array();
+    if (isset($library['cdn'])) {
+      if (isset($library['cdn']['processed'])) {
+        continue;
+      }
+      $options = $library['cdn'];
+      if (!isset($options['options'])) {
+        $options['options'] = array();
+      }
+
+      $available_plugins = \Drupal\libraries_cdn\LibrariesCDN::getAvailableCDN();
+
+      if (!isset($options['plugins']) || empty($options['plugins'])) {
+        $options['plugins'] = $available_plugins;
+      }
+      else {
+        $options['plugins'] = array_filter($options['filter'], function($value) use ($available_plugins) {
+          return in_array($value, $available_plugins);
+        });
+      }
+
+      if (!isset($options['aliases'])) {
+        $options['aliases'] = array();
+      }
+      $options['aliases'] += array($library_name);
+      $options['aliases'] = array_unique($options['aliases']);
+
+      foreach ($options['aliases'] as $alias) {
+        foreach ($options['plugins'] as $plugin) {
+          \Drupal\libraries_cdn\LibrariesCDN::setPlugin($plugin, $alias, $options);
+          $variants += \Drupal\libraries_cdn\LibrariesCDN::getLibrariesVariants();
+        }
+      }
+
+      $library['variants'] += $variants;
+    }
+    $library['cdn']['processed'] = TRUE;
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function libraries_cdn_cron() {
+  $libraries = libraries_info();
+
+  foreach ($libraries as $library_name => $library) {
+    if (isset($library['cdn'])) {
+      $options = $library['cdn'];
+
+      if (!isset($options['options'])) {
+        $options['options'] = array();
+      }
+
+      $available_plugins = \Drupal\libraries_cdn\LibrariesCDN::getAvailableCDN();
+
+      if (!isset($options['plugins']) || empty($options['plugins'])) {
+        $options['plugins'] = $available_plugins;
+      }
+      else {
+        $options['plugins'] = array_filter($options['filter'], function($value) use ($available_plugins) {
+          return in_array($value, $available_plugins);
+        });
+      }
+
+      if (!isset($options['aliases'])) {
+        $options['aliases'] = array();
+      }
+      $options['aliases'] += array($library_name);
+      $options['aliases'] = array_unique($options['aliases']);
+
+      foreach ($options['aliases'] as $alias) {
+        foreach ($options['plugins'] as $plugin) {
+          \Drupal\libraries_cdn\LibrariesCDN::setPlugin($plugin, $alias, $options);
+          \Drupal\libraries_cdn\LibrariesCDN::getLocalLibrariesVariants();
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Function to add a library to a page.
+ *
+ * @param mixed $cdns
+ *   The cdn name or an array of CDN name.
+ * @param string $library
+ *   The library name.
+ * @param null $version
+ *   The version of the library. If not set it will detect the latest.
+ * @param array $configuration
+ *   The configuration to pass to the object.
+ */
+function libraries_cdn_add($cdns = array(), $library = NULL, $version = NULL, array $configuration = array()) {
+  if (!isset($library)) {
+    return;
+  }
+  if (is_string($cdns)) {
+    $cdns = (array) $cdns;
+  }
+
+  if (empty($cdns) || in_array('*', $cdns)) {
+    $cdns = \Drupal\libraries_cdn\LibrariesCDN::getAvailableCDN();
+  }
+
+  if (empty($configuration)) {
+    $configuration = array(
+      'request' => array(
+        'timeout' => 10,
+      ),
+    );
+  }
+
+  $found = FALSE;
+
+  // Speed improvement, check the cache before going to the loop.
+  if ($cache = cache_get(implode('', $cdns) . ':' . $library . ':' . $version)) {
+    $results = $cache->data;
+    $cdns = array();
+  }
+
+  foreach ($cdns as $cdn) {
+    if ($found == TRUE) {
+      continue;
+    }
+    if (\Drupal\libraries_cdn\LibrariesCDN::isAvailableCDN($cdn)) {
+      \Drupal\libraries_cdn\LibrariesCDN::setPlugin($cdn, $library, $configuration);
+
+      if (\Drupal\libraries_cdn\LibrariesCDN::isAvailable()) {
+
+        $user_version = $version ? $version : \Drupal\libraries_cdn\LibrariesCDN::getLatestVersion();
+
+        if ($cache = cache_get($cdn . ':' . $library . ':' . $user_version)) {
+          $results = $cache->data;
+          $found = TRUE;
+        }
+        else {
+          $files = \Drupal\libraries_cdn\LibrariesCDN::getFiles();
+
+          if (isset($files[$user_version])) {
+            foreach ((array) $files[$user_version] as $file) {
+              $ext = pathinfo($file, PATHINFO_EXTENSION);
+
+              if (strpos($file, 'debug') !== FALSE || strpos($file, 'min') !== FALSE) {
+                continue;
+              }
+
+              $results[$ext][] = $file;
+              $found = TRUE;
+            };
+            $cache_id = $cdn . ':' . $library . ':' . $user_version;
+            cache_set($cache_id, $results);
+          }
+        }
+      }
+    }
+  }
+
+  if (!empty($results)) {
+    foreach ($results as $type => $files) {
+      foreach ($files as $file) {
+        call_user_func_array('drupal_add_' . $type, array($file, array('type' => 'external')));
+      }
+    }
+  }
+}
+
+/**
+ * Use the #attached key of a render array to attach a cdn libraries.
+ *
+ * See drupal_process_attached() for more information on how to use it.
+ *
+ * Code example:
+ *
+ *  $form['#attached'] = array(
+ *    'libraries_cdn_load' => array(
+ *      array('cdnjs', 'ol3', '3.8.2'),
+ *    ),
+ *  );
+ */
+function libraries_cdn_load() {
+  call_user_func_array('libraries_cdn_add', func_get_args());
+}

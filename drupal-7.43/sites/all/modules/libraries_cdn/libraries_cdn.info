@@ -1,0 +1,19 @@
+name = "Libraries CDN"
+description = "Provides a unified API to connect to a CDN like CDNJS or jsDelivr."
+core = 7.x
+php = 5.3.10
+package = "Other"
+
+dependencies[] = registry_autoload
+dependencies[] = service_container
+dependencies[] = service_container_symfony
+dependencies[] = service_container_annotation_discovery
+
+registry_autoload[] = PSR-4
+
+; Information added by Drupal.org packaging script on 2015-08-24
+version = "7.x-1.7"
+core = "7.x"
+project = "libraries_cdn"
+datestamp = "1440397140"
+

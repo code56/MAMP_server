@@ -1,0 +1,20 @@
+name = OAuth2 Authentication
+description = Authenticates Drupal users via OAuth2
+core = 7.x
+package = OAuth2
+
+; Configuration page
+configure = admin/config/services/oauth2-authentication
+
+; Dependencies
+dependencies[] = oauth2_client
+
+; Classes
+files[] = classes/OAuth2AuthenticationClient.class.php
+
+; Information added by Drupal.org packaging script on 2015-01-22
+version = "7.x-1.1"
+core = "7.x"
+project = "oauth2_authentication"
+datestamp = "1421965681"
+

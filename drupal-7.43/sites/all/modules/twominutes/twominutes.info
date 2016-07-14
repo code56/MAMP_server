@@ -1,0 +1,5 @@
+name = Two Minute Module
+description = "Demonstration of how quickly you can build a single-page module."
+package = Build a Module
+core = 7.x
+files[] = twominutes.module

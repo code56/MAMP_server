@@ -1,0 +1,296 @@
+<?php
+/**
+ * @file
+ * Provides functionality for the OAuth2 Authentication module.
+ */
+
+/****************************************************************************
+ * Drupal Core Hooks
+ ****************************************************************************/
+
+/**
+ * Implements hook_menu().
+ */
+function oauth2_authentication_menu() {
+  $items = array();
+  $items['admin/config/services/oauth2-authentication'] = array(
+    'title' => 'OAuth2 Authentication',
+    'description' => 'Configure OAuth2 Authentication parameters.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('oauth2_authentication_admin_form'),
+    'access arguments' => array('administer oauth2 authentication'),
+    'file' => 'includes/oauth2_authentication.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function oauth2_authentication_permission() {
+  return array(
+    'administer oauth2 authentication' => array(
+      'title' => t('Administer authentication parameters'),
+      'description' => t('Allows users to set authentication parameters such as the token endpoint and client credentials.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu_alter().
+ *
+ * Alter some core menu functionality to potentially disable some items.
+ */
+function oauth2_authentication_menu_alter(&$items) {
+  global $user, $language;
+
+  // Set the path for password resets.
+  $path = 'user/password';
+
+  // Restrict the password reset page to user administrators if password editing
+  // is disabled.
+  if ((!variable_get('oauth2_authentication_user_edit_password', FALSE)) &&
+      ($user->uid != 1)) {
+    $items[$path]['access callback'] = 'user_access';
+    $items[$path]['access arguments'] = array('administer users');
+
+    // Add support for language-prefixed paths.  There doesn't appear to be an
+    // easy way to get them so let's use global variables to do so.
+    if (($language->language != LANGUAGE_NONE) && (!empty($language->prefix))) {
+      $prefix = $language->prefix;
+      $items[$prefix . '/' . $path]['access callback'] = 'user_access';
+      $items[$prefix . '/' . $path]['access arguments'] = array('administer users');
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the user_login form.
+ *
+ * As per user_login_default_validators(), there are three (3) standard
+ * validation functions that determine if a user can be logged in.
+ *
+ *   1. user_login_name_validate()
+ *   2. user_login_authenticate_validate()
+ *   3. user_login_final_validate()
+ *
+ * We need to override the second one because it determines the user validity
+ * based exclusively on its existence in the database.  In our case, if the user
+ * exists as per the remote authorization service, but not locally, we want to
+ * create it.
+ */
+function oauth2_authentication_form_user_login_alter(&$form, &$form_state, $form_id) {
+
+  // Replace the user_login_authenticate_validate() call with our own
+  // oauth2_authentication_login_authenticate_validate() function.
+  if (in_array('user_login_authenticate_validate', $form['#validate'])) {
+    $key = array_search('user_login_authenticate_validate', $form['#validate']);
+    $form['#validate'][$key] = 'oauth2_authentication_login_authenticate_validate';
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the user_login_block form.
+ */
+function oauth2_authentication_form_user_login_block_alter(&$form, &$form_state, $form_id) {
+  global $user;
+
+  // Make the same changes as we're making to the standard login form.  See
+  // oauth2_authentication_form_user_login_alter() for details.
+  oauth2_authentication_form_user_login_alter($form, $form_state, $form_id);
+
+  // Disable password-reset links if applicable.
+  if ((!variable_get('oauth2_authentication_user_edit_password', FALSE)) &&
+      ($user->uid != 1)) {
+    $form['links'] = '';
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the user_profile_form form.
+ *
+ * Disable editing of externally-controlled user profile fields.  These user
+ * attributes would normally be controlled by another CRM-type system.  To set
+ * which fields are to enabled or disabled, go to the module configuration page.
+ * By default, they are all disabled.
+ */
+function oauth2_authentication_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
+  global $user;
+
+  // We want to keep user fields editable for user administrators so exit if the
+  // current user is one of them.
+  if (($user->uid == 1) || user_access('administer users')) {
+    return;
+  }
+
+  // Get configuration info on which user attributes are not to be edited.
+  $disable_email = !variable_get('oauth2_authentication_user_edit_email', FALSE);
+  $disable_password_change = !variable_get('oauth2_authentication_user_edit_password', FALSE);
+
+  // Disable the current password field if neither the e-mail nor the password
+  // fields are editable.  It's only needed if one wishes to edit either of
+  // those fields.
+  $disable_password_current = ($disable_email && $disable_password_change);
+
+  // Disable editing of the E-mail Address field if was configured as such.
+  if ($disable_email) {
+    $form['account']['mail']['#disabled'] = TRUE;
+  }
+
+  // Disable editing of the Password & Confirm Password fields if they were
+  // configured as such.
+  if ($disable_password_change) {
+    $form['account']['pass']['#disabled'] = TRUE;
+  }
+
+  // Disable editing of the Current Password field if was configured as such.
+  if ($disable_password_current) {
+    $form['account']['current_pass']['#disabled'] = TRUE;
+  }
+}
+
+/**
+ * Implements hook_user_logout().
+ *
+ * Purge any access tokens stored in the user's session.  We definitely don't
+ * want these to be used by a different user that logs in sometime between now
+ * and the existing token's expiration time.
+ */
+function oauth2_authentication_user_logout($account) {
+
+  // As using unset() on a global variable may not always unset it outside of
+  // the current scope, simply drop any OAuth2 tokens by assigning an empty
+  // list.
+  $_SESSION['oauth2_client'] = array();
+}
+
+/****************************************************************************
+ * Drupal Core Function Replacements
+ ****************************************************************************/
+
+/**
+ * Replacement for user_login_authenticate_validate().
+ *
+ * All code here except for the last stanza should be identical to what's in
+ * user_login_authenticate_validate().  The last stanza is the only thing we'd
+ * like to change as that's the function call we actually care about.
+ */
+function oauth2_authentication_login_authenticate_validate($form, &$form_state) {
+  $password = trim($form_state['values']['pass']);
+  if (!empty($form_state['values']['name']) && !empty($password)) {
+    // Do not allow any login from the current user's IP if the limit has been
+    // reached. Default is 50 failed attempts allowed in one hour. This is
+    // independent of the per-user limit to catch attempts from one IP to log
+    // in to many different user accounts.  We have a reasonably high limit
+    // since there may be only one apparent IP for all users at an institution.
+    if (!flood_is_allowed('failed_login_attempt_ip', variable_get('user_failed_login_ip_limit', 50), variable_get('user_failed_login_ip_window', 3600))) {
+      $form_state['flood_control_triggered'] = 'ip';
+      return;
+    }
+    $account = db_query("SELECT * FROM {users} WHERE name = :name AND status = 1", array(':name' => $form_state['values']['name']))->fetchObject();
+    if ($account) {
+      if (variable_get('user_failed_login_identifier_uid_only', FALSE)) {
+        // Register flood events based on the uid only, so they apply for any
+        // IP address. This is the most secure option.
+        $identifier = $account->uid;
+      }
+      else {
+        // The default identifier is a combination of uid and IP address. This
+        // is less secure but more resistant to denial-of-service attacks that
+        // could lock out all users with public user names.
+        $identifier = $account->uid . '-' . ip_address();
+      }
+      $form_state['flood_control_user_identifier'] = $identifier;
+
+      // Don't allow login if the limit for this user has been reached.
+      // Default is to allow 5 failed attempts every 6 hours.
+      if (!flood_is_allowed('failed_login_attempt_user', variable_get('user_failed_login_user_limit', 5), variable_get('user_failed_login_user_window', 21600), $identifier)) {
+        $form_state['flood_control_triggered'] = 'user';
+        return;
+      }
+    }
+
+    // We are not limited by flood control, so try to authenticate.
+    // Set $form_state['uid'] as a flag for user_login_final_validate().
+    $form_state['uid'] = oauth2_authentication_authenticate($form_state['values']['name'], $password);
+  }
+}
+
+/**
+ * Replacement for user_authenticate().
+ *
+ * user_authenticate() determines if a user is valid by looking it up in the
+ * local database.  If that's not the case, the user may exist in the remote
+ * system.  So we want to add him/her locally if he/she exists there.  If the
+ * user does exist locally, we'd like to add a token to his/her session.
+ *
+ * @param $name
+ *   User name to authenticate.
+ * @param $password
+ *   A plain-text password, such as trimmed text from form values.
+ * @return
+ *   The user's uid on success, or FALSE on failure to authenticate.
+ */
+function oauth2_authentication_authenticate($name, $password) {
+
+  // Assume the user is invalid until we determine otherwise.
+  $uid = FALSE;
+
+  // Only check for a valid user if the username & password were set.
+  if (!empty($name) && !empty($password)) {
+
+    // Attempt to load a local user with that name.
+    $account = user_load_by_name($name);
+
+    // Instantiate an OAuth2 Authentication class with the credentials.
+    $class = variable_get('oauth2_authentication_class', 'OAuth2AuthenticationClient');
+    $client = new $class($name, $password);
+
+    // If the load was successful, we can see if the entered password is valid.
+    if ($account) {
+
+      // Allow alternate password hashing schemes in checking the password.
+      require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
+      if (user_check_password($password, $account)) {
+
+        // Successful authentication.
+        $uid = $account->uid;
+
+        // Update user to new password scheme if needed.
+        if (user_needs_new_hash($account)) {
+          user_save($account, array('pass' => $password));
+        }
+
+        // Get a remote access token if possible.  If it's not possible, the
+        // user can still log in, but he/she won't be able to access remote
+        // resources.
+        $client->getAccessToken();
+      } else {
+        // Maybe the remote password has changed and the user is trying new password.
+
+        // Check if the user exists remotely.  If so update their account/password.
+        if ($client->userExistsRemotely()) {
+          $uid = $client->updateUserLocally($account)->uid;
+        }
+      }
+    }
+
+    else /* there is no local user account */ {
+
+      // Instantiate an OAuth2 Authentication class with the credentials.
+      $class = variable_get('oauth2_authentication_class', 'OAuth2AuthenticationClient');
+      $client = new $class($name, $password);
+
+      // Check if the user exists remotely.
+      if ($client->userExistsRemotely()) {
+
+        // We're dealing with a valid remote user so create it locally.
+        $uid = $client->createUserLocally()->uid;
+      }
+    }
+  }
+
+  // Return the user's local ID if there is one.
+  return $uid;
+}
+

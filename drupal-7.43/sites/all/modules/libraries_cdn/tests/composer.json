@@ -1,0 +1,15 @@
+{
+  "require-dev": {
+    "phpunit/phpunit": "3.7.*",
+    "mockery/mockery": "0.9.*",
+    "lionsad/service_container": "dev-7.x-1.x"
+  },
+  "autoload": {
+    "psr-4": {
+      "Drupal\\libraries_cdn\\": "../src/",
+      "Drupal\\Tests\\libraries_cdn\\": "src/"
+    }
+  },
+  "require": {
+  }
+}
