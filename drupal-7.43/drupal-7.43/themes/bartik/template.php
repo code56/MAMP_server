@@ -154,3 +154,13 @@ function bartik_field__taxonomy_term_reference($variables) {
 
   return $output;
 }
+
+function bartik_preprocess_page(&$variables) {
+  drupal_add_library('system','drupal.autocomplete');
+  drupal_add_js(path_to_theme().'/scripts/autocomplete.js','file');
+  drupal_add_js(path_to_theme().'/scripts/autocomplete.js','file');
+  drupal_add_js(path_to_theme().'/scripts/jquery.ui.autocomplete.html.js','file');
+
+  
+
+}

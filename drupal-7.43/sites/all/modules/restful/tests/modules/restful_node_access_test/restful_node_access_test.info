@@ -1,0 +1,13 @@
+name = RESTful node access Test
+description = Helper module for testing the RESTful module with node access.
+core = 7.x
+dependencies[] = restful
+dependencies[] = restful_test
+hidden = TRUE
+
+; Information added by Drupal.org packaging script on 2016-06-16
+version = "7.x-2.11"
+core = "7.x"
+project = "restful"
+datestamp = "1466059445"
+

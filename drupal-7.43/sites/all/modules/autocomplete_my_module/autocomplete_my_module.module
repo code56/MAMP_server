@@ -1,0 +1,63 @@
+<?php
+
+// $Id$
+
+/**
+*
+*
+*/
+
+//
+
+function autocomplete_my_module_menu(){
+	
+	$items['autocomplete_form'] = array(
+        'title' => 'Test autocomplete form',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('test_autocomplete_form'),
+        'access arguments' => array('access test autocomplete'),
+        'type' => MENU_NORMAL_ITEM
+);
+
+	return $items;
+
+}
+
+// Which will get the autocomplete form
+function test_autocomplete_form(){
+    $form = array();
+    $form['testauto'] = array(
+        '#type' => 'textfield',
+        '#autocomplete_path' => 'test/autocomplete',
+        '#description' => t('Please type any letter.'),
+    );
+    return $form;
+}
+
+
+function autocomplete_my_module_page(){
+	$output = '';
+
+	$output .= '<p>Hey, this is my first module, it works, great!</p>';
+
+	return $output;
+
+}
+
+
+// adds css and JS files after all the drupal modules have been loaded.
+
+function autocomplete_my_module_init() {
+    drupal_add_css(drupal_get_path('module', 'autocomplete_my_module') .'/autocomplete.css');
+    drupal_add_css(drupal_get_path('module', 'autocomplete_my_module') .'jquery-ui-1.12.0/jquery-ui.css');
+
+    drupal_add_js(drupal_get_path('module', 'autocomplete_mymodule') .'/jquery.ui.autocomplete.html.js');
+        drupal_add_js(drupal_get_path('module', 'autocomplete_mymodule') .'/autocomplete.js');
+    $settings = variable.get('mymodule', unserialize(MYMODULE_DEFAULT)
+    );
+    drupal_add_js(array('mymodule' => $settings), 'setting');
+    }
+
+
+
+
