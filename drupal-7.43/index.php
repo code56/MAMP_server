@@ -19,3 +19,11 @@ define('DRUPAL_ROOT', getcwd());
 require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
 drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 menu_execute_active_handler();
+//error_log ("bla bla bla");
+// added  this code in the effort of recovering my drupal password.
+//require_once('includes/password.inc');
+//echo user_hash_password('abc');
+
+//menu_execute_active_handler();
+
+

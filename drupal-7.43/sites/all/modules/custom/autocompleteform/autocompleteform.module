@@ -1,37 +1,50 @@
 <?php 
+// $Id$
 
-function ajaxforms_menu(){
+/**
+*
+*
+*/
+
+/**
+*/
+function autocompleteform_page_build(&$page) {
+    drupal_add_js(drupal_get_path('module', 'autocompleteform') . '/autocomplete.js', 
+    array('type' => 'file', 'scope' => 'footer'));
+}
+
+
+
+
+function autocompleteform_menu(){
 	
-	$items['ajaxforms_menu'] = array(
-        'title' => 'Ajaxforms',
+	$items['autocompleteform_menu'] = array(
+        'title' => 'Autocompleteform',
         'page callback' => 'drupal_get_form',
-        'page arguments' => array('ajaxforms_basic'),
+        'page arguments' => array('autocompleteforms_basic'),
         'access callback' => TRUE,
 );
 
 	
-	$items['ajaxform_autocomplete_callback'] = array(
-        'page callback' => 'ajaxforms_autocomplete_callback',
+	$items['autocompleteform_autocomplete_callback'] = array(
+        'page callback' => 'autocompleteform_autocomplete_callback',
        	'type' => MENU_CALLBACK, 
         'access callback' => TRUE,
 );
-
 	
-
-
 	return $items;
 
 }
 
 
-function ajaxforms_basic($form, &$form_state){
+function autocompleteform_basic($form, &$form_state){
 	$form = array();
 	$form['username'] = array(
 		'#title' => t('Username'),
 		'#type' => 'textfield',
 		'#ajax' => array(
-			'callback' => 'ajaxforms_basic_callback',
-			'wrapper' => 'ajaxforms-basic-wrapper',
+			'callback' => 'autocompleteform_basic_callback',
+			'wrapper' => 'autocompleteform-basic-wrapper',
 		),
 	);
 
@@ -43,7 +56,7 @@ function ajaxforms_basic($form, &$form_state){
 	$form['article_search'] = array(
 		'#title' => t('Search articles'),
 		'#type' => 'textfield',
-		'#autocomplete_path' => 'ajaxforms_autocomplete_callback',
+		'#autocomplete_path' => 'autocompleteform_autocomplete_callback',
 	);
 
 
@@ -52,7 +65,7 @@ function ajaxforms_basic($form, &$form_state){
 		$form['password']['#description'] = 'Hi <strong> ' . $form_state['values']['username'] . '</strong>! Please give your password.';
 	}
 
-	$form['password']['#prefix'] = '<div id="ajaxforms-basic-wrapper">';
+	$form['password']['#prefix'] = '<div id="autocompleteform-basic-wrapper">';
 	$form['password']['#suffix'] = '</div>'; 
 
 	$form['submit'] = array(
@@ -65,7 +78,7 @@ function ajaxforms_basic($form, &$form_state){
 }
 
 
-function ajaxforms_autocomplete_callback($search_string = '') {
+function autocompleteform_autocomplete_callback($search_string = '') {
 	$matches = array();
 
 	$result = db_query_range('SELECT n.title, n.nid FROM {node} n WHERE n.title LIKE :string', 0, 10, array(':string' => '&' . db_like($search_string) . '%'));
@@ -78,7 +91,14 @@ function ajaxforms_autocomplete_callback($search_string = '') {
 }
 
 
-function ajaxforms_basic_callback($form, &$form_state){
+function autocompleteform_basic_callback($form, &$form_state){
 	//dpm($form_state);
 	return $form['password'];
 };
+
+
+
+
+
+
+

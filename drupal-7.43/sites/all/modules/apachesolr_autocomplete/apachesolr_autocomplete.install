@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * ApacheSolr Autocomplete module install, update and uninstall functions.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function apachesolr_autocomplete_uninstall() {
+  // Delete variables.
+  variable_del('apachesolr_autocomplete_widget');
+  variable_del('apachesolr_autocomplete_suggest_keywords');
+  variable_del('apachesolr_autocomplete_suggest_spellcheck');
+  variable_del('apachesolr_autocomplete_counts');
+  variable_del('apachesolr_autocomplete_cache_maximum_age');
+}
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * Since the menu handler path has changed, we need to rebuild the menus.
+ * Also, JS files are changed so we need to clear any JS aggregated files.
+ */
+function apachesolr_autocomplete_update_7100() {
+  cache_clear_all(NULL, 'cache_menu');
+  drupal_clear_js_cache();
+
+  // Tell what happenned.
+  drupal_set_message(t("Rebuilt menu paths, and cleared JS aggregation cache."));
+
+  return array();
+}
