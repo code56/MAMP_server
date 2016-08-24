@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<html>
+    <head>
+        <meta charset="utf-8">
+    <title>jQuery $.getJSON() function and jQuery UI Autocomplete and autocomplete.js</title>
+
+<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>  -->
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="crossorigin="anonymous"></script>
+<script type="text/javascript" src="/assets/autocomplete.js"></script>  
+<script type="text/javascript" src="/assets/test_autocomplete.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.js"
+                integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="
+                crossorigin="anonymous"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<!--
+<script type="text/javascript" src="jquery.autocomplete.min.js"></script>
+-->
+<link href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="Stylesheet"></link>
+<link href="/assets/autocomplete.css" rel="Stylesheet"></link>
+
+<script type="text/javascript">
+
+                /*
+        // needs to be query?
+        $.getJSON('http://www.ebi.ac.uk/ols/api/select?q=potato&rows=10&ontology=po', function(OLSresults) {
+        console.log(OLSresults.responseHeader.params.hl) // true, works
+        //var option = OLSresults.responseHeader.params.hl
+        var arrResults = [OLSresults];*/
+
+    //must look into why the autosuggestion drop down appears above the box.
+    var data = [
+        { value: "W", label: "Wheat" },
+        { value: "R", label: "Rice" },
+        { value: "B", label: "Barley" },
+
+    ];
+
+    $(function() {
+
+        $("#autocomplete2").autocomplete({
+            source: data,
+            focus: function(event, ui) {
+                // prevent autocomplete from updating the textbox
+                event.preventDefault();
+                // manually update the textbox
+                $(this).val(ui.item.label);
+            },
+            select: function(event, ui) {
+                // prevent autocomplete from updating the textbox
+                event.preventDefault();
+                // manually update the textbox and hidden field
+                $(this).val(ui.item.label);
+                $("#autocomplete2-value").val(ui.item.value);
+            }
+        });
+    });
+
+    /*
+        $(document).ready(function() {
+           $(function () {
+               var availablePlantType = [
+                   "rice",
+                   "wheat",
+               ];
+               $("autocomplete-2").autocomplete({
+                   source: availablePlantType
+               });
+
+           });
+       });
+
+
+
+        $(function() {
+                    var availableTutorials = [
+                        "ActionScript",
+                        "Boostrap",
+                        "C",
+                        "C++",
+                    ];
+                    $( "#automplete-1" ).autocomplete({
+                        source: availableTutorials
+                    });
+                });*/
+</script>
+
+
+</head>
+
+
+    <body>
+        <!-- HTML -->
+
+    <P>Please select the developmental stage of of your sample</P>
+        <input id="autocomplete-example" data-autocomplete-param-name="rows=50&ontology=po&q"data-autocomplete="http://www.ebi.ac.uk/ols/api/select/" autocomplete="off"/>
+    <!--<div class = "autocomplete" id="autocomplete-example"></div>-->
+
+
+    <p>Plant type<br>
+        <input id="autocomplete2" type="text" >
+        <input id="autocomplete2-value" type="text" name="code"></p>
+
+
+
+      <!--  <form>
+            Plant of sample:<b>
+            <input type="text" name="plantName" id="plant_type" value="e.g. wheat"><br>
+            Tissue of sample:<br>
+            <input type="text" name = "tissueName" id="tissue" value="e.g. bran" /></b>
+
+        </form>-->
+
+    </body>    
+
+</html>
+
+
+<!-- GET http://www.ebi.ac.uk/ols/api/select/?rows=50&ontology=po&q=po
+ -->	
+<!-- //what does iri=obo do? i found it from the new ols website.  -->
+
+<!-- &iri=obo -->
+
