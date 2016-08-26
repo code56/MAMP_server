@@ -30,6 +30,12 @@ function mymodule_page(){
 
 	$output .= '<p>Hey, this is my first module, it works, great!</p>';
 
+	// adding this here does nothing. 
+	//drupal_add_js('jQuery(document).ready(function ($) { alert("Hello all!!"); });', 'inline');
+
 	return $output;
 
+
 }
+
+

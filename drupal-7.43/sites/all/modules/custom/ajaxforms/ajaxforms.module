@@ -16,9 +16,6 @@ function ajaxforms_menu(){
         'access callback' => TRUE,
 );
 
-	
-
-
 	return $items;
 
 }
@@ -82,3 +79,4 @@ function ajaxforms_basic_callback($form, &$form_state){
 	//dpm($form_state);
 	return $form['password'];
 };
+

@@ -1,0 +1,13 @@
+<?php
+
+/**
+* Implement hook_init
+*/
+
+function testing_init(){
+	
+	drupal_add_js(array('company_name' => 'eLife'), 'setting');
+	drupal_add_library('jQuery(document).ready(function ($) { alert("Hello all!!"); });', 'inline');
+}
+
+ drupal_add_js('jQuery(document).ready(function () { alert("Hello!"); });', 'inline');

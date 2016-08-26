@@ -1,7 +1,7 @@
 ; $IdS
-name = Mt first module
+name = My first module
 description = Example of a simple module with text output
 package = Module building
 core = 7.x
 files[] = mymodule.module
-
+scripts[] = js/mymodule.js

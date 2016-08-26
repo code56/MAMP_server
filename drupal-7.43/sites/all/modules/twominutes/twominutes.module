@@ -15,7 +15,7 @@ function twominutes_menu() {
 	return $items;
 }
 
-function twominutes_page() {
+/*function twominutes_page() {
 	return "Hello, world!";
 }
-
+*/

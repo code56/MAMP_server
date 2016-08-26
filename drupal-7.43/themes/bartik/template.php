@@ -161,5 +161,9 @@ function bartik_preprocess_page(&$variables) {
   drupal_add_js(path_to_theme().'/scripts/jquery.autocomplete.min.js','file');
   drupal_add_js(path_to_theme().'/scripts/autocomplete.js','file');
   drupal_add_js(path_to_theme().'/scripts/jquery.ui.autocomplete.html.js','file');
-
+  //this works. 
+  //drupal_add_js('jQuery(document).ready(function ($) { alert("Hello added javascript!"); });', 'inline');
  }
+
+
+

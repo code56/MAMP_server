@@ -1,0 +1,5 @@
+name = testing module
+description = "testing adding js to a module."
+package = Build a Module
+core = 7.x
+files[] = testing.module

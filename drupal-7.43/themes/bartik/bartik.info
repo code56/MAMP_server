@@ -5,10 +5,16 @@ package = Core
 version = VERSION
 core = 7.x
 
+
+
 stylesheets[all][] = css/layout.css
 stylesheets[all][] = css/style.css
 stylesheets[all][] = css/colors.css
 stylesheets[print][] = css/print.css
+
+scripts[] = js/bartik.js
+scripts[] = js/jquery.autofill.js
+scripts[] = js/utilities.js
 
 regions[header] = Header
 regions[help] = Help
@@ -38,4 +44,6 @@ settings[shortcut_module_link] = 0
 version = "7.43"
 project = "drupal"
 datestamp = "1456343506"
+
+
 
