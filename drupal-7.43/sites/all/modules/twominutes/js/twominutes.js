@@ -7,7 +7,7 @@
 */
 
 
-(function ($){
+(function ($) {
     var data = [
         { value: "W", label: "Wheat" },
         { value: "R", label: "Rice" },

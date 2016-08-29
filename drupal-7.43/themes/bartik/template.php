@@ -155,7 +155,7 @@ function bartik_field__taxonomy_term_reference($variables) {
   return $output;
 }
 
-function bartik_preprocess_page(&$variables) {
+/*function bartik_preprocess_page(&$variables) {
   drupal_add_library('system','drupal.autocomplete');
   drupal_add_js(path_to_theme().'/scripts/jquery-1.9.1.min.js','file');
   drupal_add_js(path_to_theme().'/scripts/jquery.autocomplete.min.js','file');
@@ -165,5 +165,5 @@ function bartik_preprocess_page(&$variables) {
   //drupal_add_js('jQuery(document).ready(function ($) { alert("Hello added javascript!"); });', 'inline');
  }
 
-
+*/
 

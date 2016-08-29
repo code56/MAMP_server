@@ -8,7 +8,7 @@
 Drupal.behaviors.bartik = {
   attach: function (context) {
     $('#search-block-form input:text', context).autofill({
-      value: "Search !!!!!..."
+      value: "Search above!!!!  !!!!!..."
     });
   }
 };

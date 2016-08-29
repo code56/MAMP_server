@@ -1,3 +1,30 @@
+<!DOCTYPE HTML>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<html>
+    <head>
+        <meta charset="utf-8">
+    <title>Elife article</title>
+<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>  -->
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.1.0.js"
+               integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="
+                crossorigin="anonymous"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<link href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="Stylesheet"></link>
+</script>
+</head>
+<body>
+    <P>Please select the developmental stage of of your sample</P>
+        <input id="autocomplete-example" data-autocomplete-param-name="rows=50&ontology=po&q" data-autocomplete="http://www.ebi.ac.uk/ols/api/select/" autocomplete="off"/>
+    <!--<div class = "autocomplete" id="autocomplete-example"></div>-->
+
+    <p>Plant type<br>
+        <input id="autocomplete2" type="text" >
+        <input id="autocomplete2-value" type="text" name="code"></p>
+
+
+</body>
+</html>
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <script type="text/x-mathjax-config">// <![CDATA[
 MathJax.Hub.Config({
@@ -67,29 +94,17 @@ jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":
 <!--[if lt IE 9]><script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script type="text/javascript" src="application-ef96501f028dba65c10a08512d37267546d1a1c3c78159b1f1e139aa66b7b98d.js">
-
 <script type="text/javascript">
-// Add inline JavaScript.
-drupal_add_js('alert("This is inline");', 'inline');
-
-// Same as above, but explicit.
-drupal_add_js('alert("This is inline");', array('type' => 'inline'));
-
-//use the jQuery object inline.
-drupal_add_js('alert(jQuery("hi span").text());', array('type' => 'inline')); 
-
-//same as above, but now we can use the jQuery object as $.
-drupal_add_js('(function ($) { alert($("hi span").text())})(jQuery);', array('type' => 'inline')); 
 
 //Save a variable to use in JavaScript code.
 global $user;
-drupal_add_js(array('interact' => array('username' => $user->name)), 'setting');
-drupal_add_js('alert(Drupal.settings.interact.username);', array('type' => 'inline', 'scope' => 'footer'));
+drupal_add_library(array('interact' => array('username' => $user->name)), 'setting');
+drupal_add_library('alert(Drupal.settings.interact.username);', array('type' => 'inline', 'scope' => 'footer'));
 
 $build = array(
-	'#type' => 'markup',
-	'#markup' => '<p> This is an examples page.</p>',
-	);
+  '#type' => 'markup',
+  '#markup' => '<p> This is an examples page.</p>',
+  );
 
 return $build;
 // ]]></script>
@@ -245,31 +260,7 @@ var container_div="bar_expression_viewer";
   });
   //$("#bar_expression_viewer_sort_div").disableSelection(); //We need to move this to the js component
 // ]]></script>
-<script type="text/javascript">// <![CDATA[
-// Add inline JavaScript.
-drupal_add_js('alert("This is inline");', 'inline');
 
-// Same as above, but explicit.
-drupal_add_js('alert("This is inline");', array('type' => 'inline'));
-
-//use the jQuery object inline.
-drupal_add_js('alert(jQuery("hi span").text());', array('type' => 'inline')); 
-
-//same as above, but now we can use the jQuery object as $.
-drupal_add_js('(function ($) { alert($("hi span").text())})(jQuery);', array('type' => 'inline')); 
-
-//Save a variable to use in JavaScript code.
-global $user;
-drupal_add_js(array('interact' => array('username' => $user->name)), 'setting');
-drupal_add_js('alert(Drupal.settings.interact.username);', array('type' => 'inline', 'scope' => 'footer'));
-
-$build = array(
-	'#type' => 'markup',
-	'#markup' => '<p> This is an examples page.</p>',
-	);
-
-return $build;
-// ]]></script>
 <h3>Introduction</h3>
 <p>The dynamics of most chronic viral infections such as HIV, hepatitis B and C, and cytomegalovirus are assessed by serially sampling blood using polymerase chain reaction (<a class="xref-bibr" href="#bib21">Perelson et al., 1996</a>), and by ex vivo quantitation of circulating lymphocytes to estimate immune response (<a class="xref-bibr" href="#bib32">Sylwester et al., 2005</a>). For disseminated infections, sampling from blood may reflect true host–pathogen dynamics due to homogeneous mixing of viruses and PBMCs, which originate from thousands of infectious foci. However, many infections are confined to small anatomic regions; localized host–pathogen interactions within specific organ tissue constitutes the predominant site of pathogenesis, and measurements of viral replication and immune response are not accurately reflected in the blood compartment. Moreover, sampling of infected tissue often reveals that the density of virus and host immune cells differ enormously across small distances. Spatial features of infection are a critical, and relatively unexplored, component of viral dynamics.</p>
 <p>Herpes simplex virus-2 (HSV-2) is useful for studying localized aspects of pathogenesis in humans. HSV-2 replicates in highly accessible genital keratinocytes. Serial genital swabbing reveals frequent, highly variable shedding episodes in most infected persons (<a class="xref-bibr" href="#bib36">Wald et al., 1995</a>, <a class="xref-bibr" href="#bib37">1997</a>, <a class="xref-bibr" href="#bib38">2000</a>; <a class="xref-bibr" href="#bib5">Crespi et al., 2007</a>; <a class="xref-bibr" href="#bib18">Mark et al., 2008</a>), and biopsies show dense clusters of CD4+ and CD8+ lymphocytes in focal areas of viral replication (<a class="xref-bibr" href="#bib40">Zhu et al., 2007</a>). Some episodes are associated with lesions, and prolonged viral production, while others are asymptomatic and brief (<a class="xref-bibr" href="#bib18">Mark et al., 2008</a>). Markedly different episodes occur within 5–10 days of each other, and viral levels fluctuate dramatically even within a single episode (<a class="xref-bibr" href="#bib18">Mark et al., 2008</a>; <a class="xref-bibr" href="#bib28">Schiffer et al., 2011</a>). At least 20% of episodes are notable for complex erratic viral trajectories, including re-expansion phases that represent failure of the immune system to contain replication (<a class="xref-bibr" href="#bib28">Schiffer et al., 2011</a>). Past modeling suggests that nearly constant reactivation of HSV in a small percentage of infected ganglionic neurons might account for high frequency of shedding episodes (<a class="xref-bibr" href="#bib25">Schiffer et al., 2009</a>). Animal and mathematical models predict that varying T-cell responses account for episode heterogeneity (<a class="xref-bibr" href="#bib11">Gebhardt et al., 2009</a>; <a class="xref-bibr" href="#bib26">Schiffer et al., 2010</a>). However, the field lacks hypotheses to address the complex morphology of prolonged viral shedding episodes.</p>
