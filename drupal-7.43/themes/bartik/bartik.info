@@ -22,6 +22,7 @@ scripts[] = js/autocomplete.js
 scripts[] = js/test_autocomplete.js
 
 
+
 regions[header] = Header
 regions[help] = Help
 regions[page_top] = Page top

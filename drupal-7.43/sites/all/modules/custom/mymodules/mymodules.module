@@ -1,0 +1,130 @@
+<?php 
+/*
+
+
+// $Id$
+
+/**
+*
+*
+*/
+
+/**
+Implements Hook_menue
+*/
+
+function mymodules_menu() {
+
+	$items['mymodules-page'] = array(
+	'title' => 'my modules module',
+	'page callback' => 'mymodules_page',
+	'access arguments' => array('access content'),
+	
+	);
+	return $items;
+}
+
+function mymodules_form_contact_site_form_alter(&$form, &$form_state, $form_id) {
+  $path = drupal_get_path('module', 'mymodules');
+  
+  // Adds a form field that the javascript utilizes or modifies.
+  $form['location'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Your Location (Country)',
+    '#id' => 'country_autocomplete',
+    // Both the library and custom JavaScript code are added to the '#attached'
+    // property of a renderable array.
+    '#attached' => array(
+      'library' => array(
+        array('system', 'ui.autocomplete'),
+      ),
+      'js' => array(
+        "$path/mymodule-custom-javascript.js",
+      ),
+    ),
+  ); 
+}
+
+
+
+/*
+function ajaxforms_menu(){
+	
+	$items['ajaxforms_menu'] = array(
+        'title' => 'Ajaxforms',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('ajaxforms_basic'),
+        'access callback' => TRUE,
+);
+
+	
+	$items['ajaxform_autocomplete_callback'] = array(
+        'page callback' => 'ajaxforms_autocomplete_callback',
+       	'type' => MENU_CALLBACK, 
+        'access callback' => TRUE,
+);
+
+	return $items;
+
+}
+
+
+function ajaxforms_basic($form, &$form_state){
+	$form = array();
+	$form['username'] = array(
+		'#title' => t('Username'),
+		'#type' => 'textfield',
+		'#ajax' => array(
+			'callback' => 'ajaxforms_basic_callback',
+			'wrapper' => 'ajaxforms-basic-wrapper',
+		),
+	);
+
+	$form['password'] = array(
+		'#title' => t('Password'),
+		'#type' => 'textfield',
+	);
+
+	$form['article_search'] = array(
+		'#title' => t('Search articles'),
+		'#type' => 'textfield',
+		'#autocomplete_path' => 'ajaxforms_autocomplete_callback',
+	);
+
+
+
+	if(isset($form_state['values']['username'])) {
+		$form['password']['#description'] = 'Hi <strong> ' . $form_state['values']['username'] . '</strong>! Please give your password.';
+	}
+
+	$form['password']['#prefix'] = '<div id="ajaxforms-basic-wrapper">';
+	$form['password']['#suffix'] = '</div>'; 
+
+	$form['submit'] = array(
+		'#value' => t('Login'),
+		'#type' => 'submit',
+	);
+
+	return $form;
+
+}
+
+
+function ajaxforms_autocomplete_callback($search_string = '') {
+	$matches = array();
+
+	$result = db_query_range('SELECT n.title, n.nid FROM {node} n WHERE n.title LIKE :string', 0, 10, array(':string' => '&' . db_like($search_string) . '%'));
+
+	foreach ($result as $item) {
+		$matches[$item ->title] = $item ->title . ' ( nid: ' . $item->nid . ')';
+	}
+
+	drupal_json_output($matches);
+}
+
+
+function ajaxforms_basic_callback($form, &$form_state){
+	//dpm($form_state);
+	return $form['password'];
+};
+*/

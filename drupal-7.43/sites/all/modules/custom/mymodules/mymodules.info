@@ -1,0 +1,6 @@
+; $IdS
+name =  Mymodules
+description = "for the autocomplete"
+core = 7.x 
+package = Custom 
+files[] = mymodules.module

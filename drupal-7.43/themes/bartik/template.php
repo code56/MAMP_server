@@ -167,3 +167,10 @@ function bartik_field__taxonomy_term_reference($variables) {
 
 */
 
+
+// this works for the autocomplete of the wheat etc. 
+function bartik_preprocess_page(&$variables) {
+  
+  drupal_add_js('misc/jquery_autocomplete2.js', 'file');
+ }
+

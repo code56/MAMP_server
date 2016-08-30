@@ -1,4 +1,4 @@
-name = Ajaxforms
-description = Ajax Form Tutorial
+name =  Ajaxforms 
+description = ajax call 
 core = 7.x 
 package = Custom 

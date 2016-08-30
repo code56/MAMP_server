@@ -11,19 +11,6 @@
 Implements Hook_menue
 */
 
-function mymodule_menu(){
-	
-	$items['myfirst-module'] = array (
-	'title' => 'My first module',
-	'description' => 'This is my first module with text',
-	'page callback' => 'mymodule_page',
-	'access arguments' => array('access content'),
-
-
-	);
-	return $items;
-
-}
 
 function mymodule_page(){
 	$output = '';
