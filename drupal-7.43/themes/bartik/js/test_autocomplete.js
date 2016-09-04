@@ -27,6 +27,9 @@ var auto_complete = function(){
                     console.log(input.value); // PO: antheridium jacket layer - is the element chosen in the input form
                     attr(input, {"data-autocomplete-old-value": input.value});
                     alert("you selected "+ input.value);
+                    //var array = [];
+                    var x = input.value;
+                    console.log ('x string is: ' + x);
                 }
 
                 //connect the selection to a local mySQL database: 
@@ -70,8 +73,8 @@ var auto_complete = function(){
                             else {
                                 desc = doc.ontology_prefix
                             }
-                            li.innerHTML = '<span class="label label-info"><span title="' + desc + '" style="color:black; padding-top:3px; padding-bottom:3px"/>' + doc.ontology_prefix + ':' + doc.label + ' ' + '</span>' + ' - ' + '<span style="color:#158522">' + doc.obo_id + '</span></span>';
-
+                            li.innerHTML = '<span class="label label-info"><span title="' + desc + '" style="color:black; padding-top:3px; padding-bottom:3px"/>' + doc.label + ' ' + '</span>' + ' - ' + '<span style="color:#158522">' + doc.obo_id + '</span></span>';
+ //+ doc.ontology_prefix + ':'
 
                             $(li).attr('data-id', doc.id)
                             var styles = {
