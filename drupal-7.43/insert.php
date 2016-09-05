@@ -59,18 +59,7 @@ if ($db)
   echo "connected to db";
   }
 
-// inserting jhon and anymail@h.com works with this method. Inserting via the web form does not work yet. 
-/*
-$sql = "INSERT INTO nametable (firstname, lastname) VALUES ('jhon', 'anymail@h.com')"; 
 
-
-if ($connection->query($sql) === TRUE) {
-    echo "New record created successfully";
-} else {
-    echo "Error: " . $sql . "<br>" . $connection->error;
-}
-
-*/
 
 // Get values from form
 $name=$_POST['fname'];
@@ -89,70 +78,6 @@ if ($connection->query($sql) === TRUE) {
 } else {
     echo "Error: " . $sql . "<br>" . $connection->error;
 }
-
-
-//$result=$connection->mysqli_query($sql);
-
-// if successfully insert data into database, displays message "Successful".
-// if($result){
-// echo "Successful";
-// echo "<BR>";
-// echo "<a href='insert.php'>Back to main page</a>";
-// }
-
-// else {
-// echo "got an error inserting into mysql";
-// echo "error is ".$result->error
-// }
-
-
-
-
-
-
-
-// $sql="INSERT INTO nametable (fname, lname)
-
-// VALUES
-
-// ('$_POST[fname]','$_POST[lname]')";
-
- 
-
-// if (!mysqli_query($sql,$connection))
-
-//   {
-
-//   die('Error: ' . mysqli_error());
-
-//   }
-
-// echo "1 record added";
-
- 
-
-
-
-
-
-// if(isset($_POST['submit'])){ // Fetching variables of the form which travels in URL
-// 	$fname = $_POST['firstname'];
-// 	$lname = $_POST['lastname'];
-
-// 	if($fname !=''||$lname !=''){
-// // // //Insert Query of SQL
-
-// 		mysqli_query($connection"INSERT INTO nametable (firstname,lastname) VALUES('$fname','$lname')");
-
-
-
-// $query = mysqli_query("INSERT INTO nametable (firstname, lastname) VALUES ('$fname', '$lname')");
-// echo "<br/><br/><span>Data Inserted successfully...!!</span>";
-// }
-// else{
-// echo "<p>Insertion Failed <br/> Some Fields are Blank....!!</p>";
-// }
-// }
 
 
 
