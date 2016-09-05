@@ -5,21 +5,26 @@ jQuery(document).ready(function ($){
 
             });
 
+
+
 var auto_complete = function(){
                 AutoComplete({
-                    //_Render: function(response, ){
-                    //    console.log(response)
-                    //    response = JSON.parse(response)
-                    //    this._Render(response.params)
-                    //},
+               
+                    
                     post: do_post,
                     select: do_select,
-                    //_RenderResponseItems: do_renderresponse,
-                    //_Select: do_select,
-                    //autoFocus: true,
+//                    ajax: ajax_post, this needs to be called 
                     
-                    })
-//upon select choose what to do with it. 
+/*                    var test = do_select(); // this will grab the return value from the do_select
+                    alert ('hello am passing');
+                    alert("I grabbed the do_select function value " + test);
+    //                ajax_post();*/
+                    
+                    //var test = do_select();
+                    //console.log("hello am passing the do_select function value" + test);
+                    });
+
+//upon select choose what to do with it.//override
                 function do_select(input, item){
                     //console.log(input)
                     //console.log(item)
@@ -27,10 +32,15 @@ var auto_complete = function(){
                     console.log(input.value); // PO: antheridium jacket layer - is the element chosen in the input form
                     attr(input, {"data-autocomplete-old-value": input.value});
                     alert("you selected "+ input.value);
-                    //var array = [];
-                    var x = input.value;
-                    console.log ('x string is: ' + x);
+                    var selected_po = input.value;
+                    console.log ('x string is: ' + selected_po);
+                    
+                    // returning x (the selected PO so it can be passed to ajax_post() function to be sent to the mySQL via PHP)
+
+                    ajax_post(selected_po); 
                 }
+
+
 
                 //connect the selection to a local mySQL database: 
                 //https://www.sitepoint.com/using-node-mysql-javascript-client/
@@ -109,21 +119,38 @@ var auto_complete = function(){
                     result.appendChild(ul);
                     }
 
-                function do_render(response){
-                    response = JSON.parse(response);
-                    Autocomplete._Render(response)
-                  
-                }}
 
 
-/*
-// We define a function that takes one parameter named $.
-(function ($) {
-  // Use jQuery with the shortcut:
-  console.log($.browser);
-// Here we immediately call the function with jQuery as the parameter.
-}(jQuery));
+                function ajax_post(variable){
+                // Create our XMLHttpRequest object
+                    alert ('this function works');
+                    var hr = new XMLHttpRequest();
+                    // Create some variables we need to send to our PHP file
+                    var url = "http://localhost:8888/my_parse_file.php";
+                    //var fn = document.getElementById("first_name").value;
+                    var fn = variable;
+                    console.log("the selected_po from ajax_post is " + fn);
+                    //var ln = document.getElementById("last_name").value;
+                    var ln = variable;
+
+                    var vars = "firstname="+fn+"&lastname="+ln;
+                    
+                    hr.open("POST", url, true);
+                    // Set content type header information for sending url encoded variables in the request
+                    hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                };
+                    // Access the onreadystatechange event for the XMLHttpRequest object
+                    /*hr.onreadystatechange = function() {
+                        if(hr.readyState == 4 && hr.status == 200) {
+                            var return_data = hr.responseText;
+                            document.getElementById("status").innerHTML = return_data;
+                        }
+                    }
+                    // Send the data to PHP now... and wait for response to update the status div
+                    hr.send(vars); // Actually execute the request
+                    document.getElementById("status").innerHTML = "processing...";
+
+
 */
 
-
-
+            }; 
