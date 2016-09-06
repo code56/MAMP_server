@@ -121,24 +121,30 @@ var auto_complete = function(){
 
 
 
+                // this function is being called from within the do_select
                 function ajax_post(variable){
                 // Create our XMLHttpRequest object
-                    alert ('this function works');
-                    var hr = new XMLHttpRequest();
+                    alert ('this function works');  // passes
+                    var hr = new XMLHttpRequest(); // how do we test whether this works? it could be that the XMLHttpRequest() might not be working.
                     // Create some variables we need to send to our PHP file
-                    var url = "http://localhost:8888/my_parse_file.php";
+                    var url = "http://localhost:8888/my_parse_file1.php";
                     //var fn = document.getElementById("first_name").value;
                     var fn = variable;
-                    console.log("the selected_po from ajax_post is " + fn);
+                    alert ("the selected_po from ajax_post is " + fn); //passes
                     //var ln = document.getElementById("last_name").value;
                     var ln = variable;
 
                     var vars = "firstname="+fn+"&lastname="+ln;
                     
+
                     hr.open("POST", url, true);
                     // Set content type header information for sending url encoded variables in the request
                     hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    // Send the data to PHP now... 
+                    hr.send(vars);   // actually exectue the request
                 };
+
+
                     // Access the onreadystatechange event for the XMLHttpRequest object
                     /*hr.onreadystatechange = function() {
                         if(hr.readyState == 4 && hr.status == 200) {
