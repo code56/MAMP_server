@@ -31,6 +31,7 @@ if ($db)
 
 
 // Get values from form
+
 $name=$_POST['firstname'];
 $lastname=$_POST['lastname'];
 

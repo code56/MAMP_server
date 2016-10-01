@@ -1,7 +1,0 @@
-; $IdS
-name = Mt first module
-description = Example of a simple module with text output
-package = Module building
-core = 7.x
-files[] = mymodule.module
-
