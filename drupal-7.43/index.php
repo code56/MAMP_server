@@ -26,4 +26,8 @@ menu_execute_active_handler();
 
 //menu_execute_active_handler();
 
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
 
+// $Id: index.php,v 1.94 2007/12/26...

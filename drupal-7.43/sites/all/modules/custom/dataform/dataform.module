@@ -1,0 +1,84 @@
+<?php
+
+/**
+ * @file
+ * A module for adding js of a dropdown menu for the user to select the data they want to display in the BioJs component.
+ */
+
+/**
+this implements Hook init 
+this loads all non-cached pages
+*/
+function dataform_init() {
+//  if (current_path() == 'dataform-page') {
+  drupal_add_js('jQuery(document).ready(function () { alert("Hello from the dataform.module!"); });', 'inline');
+  drupal_add_js('misc/dataform_menu.js');
+
+//  }
+
+}
+//  //since this file should only be loaded on the front page, it cannot be declared in the info file.
+ /* if (drupal_is_front_page()) {
+    drupal_add_css(drupal_get_path('module', 'dataform_menu')) . '/dataform.css');
+  }*/
+//}
+
+
+
+/**
+ * Implements hook_block_info.
+ */
+function dataform_block_info() {
+  $blocks['dataform'] = array('info' => t('Custom block'));
+  return $blocks;
+}
+
+
+global $user;
+$account = $user;
+$blocks['dataform'] = array(
+  'info' => t('Custom block for @user', array('@user' => $account->name)),
+);
+
+/**
+ * Implements hook_block_view.
+ */
+function dataform_block_view($delta = '') {
+  global $user;
+  $account = $user;
+  $block['content'] = t('Hello @user from IP @host',array(
+    '@user' => format_username($account), 
+    '@host' => $account->hostname
+  ));
+  return $block;
+}
+
+
+/**
+Implements Hook_menue
+*/
+
+function dataform_menu() {
+
+  $items['dataform-page'] = array(
+  'title' => 'my dataform module',
+  'page callback' => 'dataform_page',
+  'access arguments' => array('access content'),
+  
+  );
+  return $items;
+}
+
+
+/** 
+* Implementation of hook_init()
+* Add CSS, Javascript and settings to the page
+*/
+
+function dataform_menu_init() {
+  drupal_add_js(drupal_get_path('module', 'dataform_menu') .'/dataform_menu.js');
+  $settings = variable_get('dataform_menu_effects', unserialize(DATAFORM_MENU_DEFAULT));
+  drupal_add_js(array('dataformMenu' => $settings), 'setting');
+}
+
+

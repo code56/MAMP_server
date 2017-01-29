@@ -1,0 +1,6 @@
+; $IdS
+name = Dataform
+description = Dataform module for selecting the data to be displayed on the BioJS copmnet
+core = 7.x 
+package = Custom
+files[] = dataform.module
