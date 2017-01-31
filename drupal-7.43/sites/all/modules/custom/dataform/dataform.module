@@ -10,12 +10,10 @@ this implements Hook init
 this loads all non-cached pages
 */
 function dataform_init() {
-//  if (current_path() == 'dataform-page') {
-  drupal_add_js('jQuery(document).ready(function () { alert("Hello from the dataform.module!"); });', 'inline');
-  drupal_add_js('misc/dataform_menu.js');
-
-//  }
-
+  if (current_path() == 'node/1') {
+    drupal_add_js('misc/dataform_menu.js');
+    drupal_add_js('jQuery(document).ready(function () { alert("Hello from the dataform.module!"); });', 'inline');
+  }
 }
 //  //since this file should only be loaded on the front page, it cannot be declared in the info file.
  /* if (drupal_is_front_page()) {
