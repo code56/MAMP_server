@@ -24,7 +24,7 @@ function dataform_init() {
 
 // autocomplete function
 
-echo "hello from the dataform.module simple php echo msg";
+//echo "hello from the dataform.module simple php echo msg";
 
 $servername = "localhost";
 $username = "root";
@@ -38,55 +38,41 @@ if (!$conn) {
     die("Connection failed: " . mysqli_connect_error());
 }
 
-$sql = "SELECT id, name, gene FROM genes";
+//$sql = "SELECT id, name, gene FROM genes";
+$sql = "SELECT name FROM gene_sets";
 $result = mysqli_query($conn, $sql);
+$rows = array();
+
 
 if (mysqli_num_rows($result) > 0) {
     // output data of each row
     while($row = mysqli_fetch_assoc($result)) {
-        echo "id: " . $row["id"]. " - Name: " . $row["name"]. " " . $row["gene"]. "<br>";
+      $rows[] = $row;
     }
+    print json_encode($rows); // this prints [{"name":"IWGSC2.26"}] //for the autcomplete I need something like this  { value: "W", label: "Wheat" },
+
+     // $data = json_encode($result, JSON_PRETTY_PRINT);
+     // echo ($data);
+    //  echo json_encode(("name: " . $row["name"]), JSON_PRETTY_PRINT). "<br>";
+//         echo "id: " . $row["id"]. " - Name: " . $row["name"]. " " . $row["gene"]. "<br>";
+
+  //  }
 } else {
     echo "0 results";
 }
-
 mysqli_close($conn);
+/*
 
-
-
-
-
-/**
- * Implements hook_block_info.
- */
-function dataform_block_info() {
-  $blocks['dataform'] = array('info' => t('Custom block'));
-  return $blocks;
+$sth = mysqli_query("SELECT ...");
+$rows = array();
+while($r = mysqli_fetch_assoc($sth)) {
+    $rows[] = $r;
 }
-
-
-global $user;
-$account = $user;
-$blocks['dataform'] = array(
-  'info' => t('Custom block for @user', array('@user' => $account->name)),
-);
-
-/**
- * Implements hook_block_view.
- */
-function dataform_block_view($delta = '') {
-  global $user;
-  $account = $user;
-  $block['content'] = t('Hello @user from IP @host',array(
-    '@user' => format_username($account), 
-    '@host' => $account->hostname
-  ));
-  return $block;
-}
+print json_encode($rows);*/
 
 
 /**
-Implements Hook_menue
+Implements Hook_menu
 */
 
 function dataform_menu() {
@@ -106,10 +92,10 @@ function dataform_menu() {
 * Add CSS, Javascript and settings to the page
 */
 
-function dataform_menu_init() {
-  drupal_add_js(drupal_get_path('module', 'dataform_menu') .'/dataform_menu.js');
-  $settings = variable_get('dataform_menu_effects', unserialize(DATAFORM_MENU_DEFAULT));
-  drupal_add_js(array('dataformMenu' => $settings), 'setting');
-}
+// function dataform_menu_init() {
+//   drupal_add_js(drupal_get_path('module', 'dataform_menu') .'/dataform_menu.js');
+//   $settings = variable_get('dataform_menu_effects', unserialize(DATAFORM_MENU_DEFAULT));
+//   drupal_add_js(array('dataformMenu' => $settings), 'setting');
+// }
 
 

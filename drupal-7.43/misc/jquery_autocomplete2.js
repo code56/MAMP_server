@@ -4,10 +4,11 @@ var auto_complete2 = function(){
 
 
     var data = [
-        { value: "W", label: "Wheat" },
-        { value: "R", label: "Rice" },
-        { value: "B", label: "Barley" },
-        {value: "T", label: "Tomato"}
+        { label: "Wheat" },
+        { label: "Rice" },
+        { label: "Barley" },
+        {label: "Tomato"},
+        {label: "Testing"}
  
     ];
 
