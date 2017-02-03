@@ -50,11 +50,7 @@ if (mysqli_num_rows($result) > 0) {
     // output data of each row
     while($row = mysqli_fetch_assoc($result)) {
       $rows[] = $row;
-      echo "<script type='text/javascript'>
-            var e = <?php Print($rows); ?>;
-            alert(e);
-            </script>
-        ";
+     
       print json_encode($rows);
       //return json_encode($rows);
     }
@@ -104,10 +100,12 @@ function dataform_menu() {
 
 ?>
 <script type="text/javascript">
-  var color = "<?php Print($rows); ?>";
+  var sql_results =<?php echo $rows; ?>;
   //alert("hello" color);
+  console.log(sql_results);
   console.log("hello am  here");
 </script>
+
 <!-- 
 /** 
 * Implementation of hook_init()
