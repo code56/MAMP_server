@@ -43,14 +43,30 @@ $sql = "SELECT name FROM gene_sets";
 $result = mysqli_query($conn, $sql);
 $rows = array();
 
+// somewhere here I will result cache my SQL results
+// I need to limit the fetching of results to 20 rows 
 
 if (mysqli_num_rows($result) > 0) {
     // output data of each row
     while($row = mysqli_fetch_assoc($result)) {
       $rows[] = $row;
+      echo "<script type='text/javascript'>
+            var e = <?php Print($rows); ?>;
+            alert(e);
+            </script>
+        ";
+      print json_encode($rows);
+      //return json_encode($rows);
     }
-    print json_encode($rows); // this prints [{"name":"IWGSC2.26"}] //for the autcomplete I need something like this  { value: "W", label: "Wheat" },
-
+    /*echo "
+            <script type=\"text/javascript\">
+              var e = <?php Print($rows); ?>;
+              console.log(\"hello\");
+            </script>
+        ";
+      print json_encode($rows);*/
+     // this prints [{"name":"IWGSC2.26"}] //for the autcomplete I need something like this  { label: "Wheat" },
+    
      // $data = json_encode($result, JSON_PRETTY_PRINT);
      // echo ($data);
     //  echo json_encode(("name: " . $row["name"]), JSON_PRETTY_PRINT). "<br>";
@@ -86,7 +102,13 @@ function dataform_menu() {
   return $items;
 }
 
-
+?>
+<script type="text/javascript">
+  var color = "<?php Print($rows); ?>";
+  //alert("hello" color);
+  console.log("hello am  here");
+</script>
+<!-- 
 /** 
 * Implementation of hook_init()
 * Add CSS, Javascript and settings to the page
@@ -97,5 +119,17 @@ function dataform_menu() {
 //   $settings = variable_get('dataform_menu_effects', unserialize(DATAFORM_MENU_DEFAULT));
 //   drupal_add_js(array('dataformMenu' => $settings), 'setting');
 // }
+/*
+def autocomplete
+    #puts "In autocomplete!"
+    gene_set_id = session[:gene_set_id] 
+    @genes = Gene.order(:name).where("name LIKE ? and gene_set_id = ?", "%#{params[:term]}%", gene_set_id).limit(20)
 
-
+    respond_to do |format|
+      format.html
+      format.json { 
+        render json: @genes.map(&:name)
+      }
+    end
+  end*/
+ -->
