@@ -4,3 +4,5 @@ description = Dataform module for selecting the data to be displayed on the BioJ
 core = 7.x 
 package = Custom
 files[] = dataform.module
+files[] = sql_query.php
+

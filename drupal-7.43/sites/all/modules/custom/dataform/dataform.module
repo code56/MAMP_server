@@ -22,91 +22,54 @@ function dataform_init() {
 //}
 
 
-// autocomplete function
-
-//echo "hello from the dataform.module simple php echo msg";
-
-$servername = "localhost";
-$username = "root";
-$password = "root";
-$dbname = "expvip_related";
-
-// Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-//$sql = "SELECT id, name, gene FROM genes";
-$sql = "SELECT name FROM gene_sets";
-$result = mysqli_query($conn, $sql);
-$rows = array();
-
-// somewhere here I will result cache my SQL results
-// I need to limit the fetching of results to 20 rows 
-
-if (mysqli_num_rows($result) > 0) {
-    // output data of each row
-    while($row = mysqli_fetch_assoc($result)) {
-      $rows[] = $row;
-     
-      print json_encode($rows);
-      //return json_encode($rows);
-    }
-    /*echo "
-            <script type=\"text/javascript\">
-              var e = <?php Print($rows); ?>;
-              console.log(\"hello\");
-            </script>
-        ";
-      print json_encode($rows);*/
-     // this prints [{"name":"IWGSC2.26"}] //for the autcomplete I need something like this  { label: "Wheat" },
-    
-     // $data = json_encode($result, JSON_PRETTY_PRINT);
-     // echo ($data);
-    //  echo json_encode(("name: " . $row["name"]), JSON_PRETTY_PRINT). "<br>";
-//         echo "id: " . $row["id"]. " - Name: " . $row["name"]. " " . $row["gene"]. "<br>";
-
-  //  }
-} else {
-    echo "0 results";
-}
-mysqli_close($conn);
-/*
-
-$sth = mysqli_query("SELECT ...");
-$rows = array();
-while($r = mysqli_fetch_assoc($sth)) {
-    $rows[] = $r;
-}
-print json_encode($rows);*/
-
-
 /**
 Implements Hook_menu
+hook enables modules to register paths in order to define how URL requests are handled.
+or they can register a link to be placed in a menue (usually the Navigation menu).
+it's results are cached in the database.  
+its implementation returns an associative array whose keys define paths and whole values 
 */
 
 function dataform_menu() {
 
-  $items['dataform-page'] = array(
-  'title' => 'my dataform module',
-  'page callback' => 'dataform_page',
+  $items['my/example'] = array(
+  'title' => 'my dataform module page test',
+  'description' => 'my test',
+  'access callback' => true, // available to all
+  'page callback' => 'my_example_page', //definition of the path. // the function to call to display a web page when the user visits the path. If omitted, the parent menu item's callback be used instead.
+  //'delivery callback' => 'drupal_json_output'
   'access arguments' => array('access content'),
-  
+  'type' => MENU_NORMAL_ITEM,
+
   );
-  return $items;
+  return $items; 
 }
 
-?>
-<script type="text/javascript">
-  var sql_results =<?php echo $rows; ?>;
-  //alert("hello" color);
-  console.log(sql_results);
-  console.log("hello am  here");
-</script>
+/**
+ * Implements hook_theme
+ *
+ */
+function dataform_menu_theme($existing, $type, $theme, $path) {
+  return array(
+    'the_html_page' => array(
+    'template' => 'the-html-page', /* create file with this name + .tpl.php */
+  ),
+);
+}
 
-<!-- 
+// vip: http://drupal.stackexchange.com/questions/101659/pass-php-page-to-page-callback-with-hook-menu
+
+// function dataform_fancystuff_object() {
+//     return array('test'=>true,'dummy'=>array(0,1));
+// }
+
+
+function my_example_page(){
+  return theme('the_html_page');
+}
+
+
+
 /** 
 * Implementation of hook_init()
 * Add CSS, Javascript and settings to the page
@@ -130,4 +93,5 @@ def autocomplete
       }
     end
   end*/
- -->
+?>
+
