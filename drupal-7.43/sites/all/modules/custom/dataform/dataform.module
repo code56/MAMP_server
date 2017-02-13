@@ -5,14 +5,10 @@
  * A module for adding js of a dropdown menu for the user to select the data they want to display in the BioJs component.
  */
 
-/**
-this implements Hook init 
-this loads all non-cached pages
-*/
 function dataform_init() {
   if (current_path() == 'node/1') {
-    drupal_add_js('misc/dataform_menu.js');
-    drupal_add_js('jQuery(document).ready(function () { alert("Hello from the dataform.module!"); });', 'inline');
+    drupal_add_js(drupal_get_path('module', 'dataform') . '/js/autocomplete_gene_names.js');
+    drupal_add_js(array('gene_names' => _dataform_gene_names()), 'setting');
   }
 }
 //  //since this file should only be loaded on the front page, it cannot be declared in the info file.
@@ -23,39 +19,103 @@ function dataform_init() {
 
 
 /**
-Implements Hook_menu
-hook enables modules to register paths in order to define how URL requests are handled.
-or they can register a link to be placed in a menue (usually the Navigation menu).
-it's results are cached in the database.  
-its implementation returns an associative array whose keys define paths and whole values 
+*Implements Hook_menu
+*hook enables modules to register paths in order to define how URL requests are handled.
+*or they can register a link to be placed in a menue (usually the Navigation menu).
+*it's results are cached in the database.  
+*its implementation returns an associative array whose keys define paths and whole values 
+*
 */
 
 function dataform_menu() {
-
-  $items['my/example'] = array(
+  $items['page-path'] = array(
   'title' => 'my dataform module page test',
+  'type' => MENU_NORMAL_ITEM,
   'description' => 'my test',
-  'access callback' => true, // available to all
-  'page callback' => 'my_example_page', //definition of the path. // the function to call to display a web page when the user visits the path. If omitted, the parent menu item's callback be used instead.
+  //'access callback' => true, // available to all
+  'page callback' => 'dataform_menu_page_main', //callback function//definition of the path. // the function to call to display a web page when the user visits the path. If omitted, the parent menu item's callback be used instead.
   //'delivery callback' => 'drupal_json_output'
   'access arguments' => array('access content'),
-  'type' => MENU_NORMAL_ITEM,
-
   );
-  return $items; 
+  $items['page-path/json'] = array(
+    'access callback' => true,
+    'page callback' => '_dataform_gene_names',
+    'delivery callback' => 'drupal_json_output',
+ 
+  );
+  return $items;
 }
+
+function _dataform_gene_names() {
+  $query = Database::getConnection('default', 'expvip')->select('gene_sets', 'gs');
+  $query->addField('gs', 'name');
+  $result = $query->execute();
+  $results = array();
+  foreach ($result as $record) {
+    $results[] = $record->name;
+  }
+
+  return $results;
+}
+
+/**
+*
+* Page callback sets up and returns the content for the my_example_page 
+*/
+function dataform_menu_page_main(){
+  $module_path = drupal_get_path('module', 'dataform');
+  $data = array(
+    'dataform' => array(
+      'path' => $module_path,
+    ),
+  );
+  drupal_add_js($data,'setting');
+  // Add the custom Javascript. DELETE IF UNNECESSARY. 
+ // drupal_add_js($moduel_path. '/dataform.js');
+  //drupal_add_css($module_path . '/dataform.css');
+
+  //Render the theme function for this page
+  // NOTE: Pass any required variables to theme function using array, 
+
+  return theme('dataform_main', array('hello' => t('Hello!')));
+
+}
+
 
 /**
  * Implements hook_theme
  *
  */
-function dataform_menu_theme($existing, $type, $theme, $path) {
+function dataform_theme() {
   return array(
-    'the_html_page' => array(
-    'template' => 'the-html-page', /* create file with this name + .tpl.php */
-  ),
-);
+    'dataform_main' => array(
+      'variables' => array(
+    //specifies both available variables.
+        'hello' => NULL,
+        'world' => NULL,
+      ),
+      // This allows you to create a tpl named dataform_main.tpl.php
+      // It will be automatically loaded by Drupal
+      'template' => 'dataform_main', /* create file with this name + .tpl.php */
+    ),  
+  );
 }
+
+/**
+*Implements hook_preprocess_THEME()/
+*
+*This Example preprocesses some variables to pass to the theme function/file.
+*DELETE IF UNNECESSARY! 
+**/
+
+function dataform_preprocess_dataform_main(&$variables) {
+ // use view_embed_view or related here.
+
+  // as an example, this fills in the world variable dataform_page_main() didn't.
+  $variables['world'] = t("World");
+
+}
+
 
 // vip: http://drupal.stackexchange.com/questions/101659/pass-php-page-to-page-callback-with-hook-menu
 
@@ -63,12 +123,12 @@ function dataform_menu_theme($existing, $type, $theme, $path) {
 //     return array('test'=>true,'dummy'=>array(0,1));
 // }
 
-
-function my_example_page(){
-  return theme('the_html_page');
-}
-
-
+/**
+*function my_example_page(){
+*  return theme('the_html_page.tpl.php');
+*}
+*
+**/
 
 /** 
 * Implementation of hook_init()
@@ -93,5 +153,5 @@ def autocomplete
       }
     end
   end*/
-?>
+
 
