@@ -17,7 +17,7 @@ function query_sql_db()
   }
 
   //$sql = "SELECT id, name, gene FROM genes";
-  $sql = "SELECT name FROM gene_sets";
+  $sql = "SELECT name FROM genes"; // for development use the gene_sets table. 
   $result = mysqli_query($conn, $sql);
   $rows = array();
 
